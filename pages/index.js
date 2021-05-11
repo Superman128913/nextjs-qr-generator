@@ -1,8 +1,45 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import axios from "axios";
+import { useState } from "react";
 
 export default function Home() {
+  const [inputs, setInputs] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    dob: "",
+    phone: "",
+    timestamp: "",
+  });
+  const [mask, updateMask] = useState(0);
+  const [code, updateCode] = useState("");
+
+  const handleSubmit = (e) => {
+    e?.preventDefault();
+    console.log(mask);
+    const payload = { data: { ...inputs, timestamp: +new Date() }, mask };
+    axios.post("http://localhost:3000/api/scan", payload).then((response) => {
+      console.log(response);
+      updateCode(response.data);
+    });
+  };
+
+  const handleInputChange = (event) => {
+    event.persist();
+    setInputs((inputs) => ({
+      ...inputs,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const newPattern = (e) => {
+    e?.preventDefault();
+    updateMask(((mask + 1) % 8));
+    handleSubmit();
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,44 +49,61 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <form onSubmit={handleSubmit} className="qr-form">
+          <label>
+            Name:
+            <input
+              type="text"
+              name="name"
+              value={inputs.name}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <label>
+            Last Name:
+            <input
+              type="text"
+              name="surname"
+              value={inputs.surname}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <label>
+            Email:
+            <input
+              name="email"
+              type="email"
+              value={inputs.email}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <label>
+            Phone:
+            <input
+              name="phone"
+              type="tel"
+              value={inputs.phone}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <label>
+            Date of birth:
+            <input
+              name="dob"
+              type="date"
+              value={inputs.dob}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
+          <input type="submit" value="Get QR" />
+        </form>
+        <button onClick={newPattern}>New pattern</button>
+        <img src={code} alt="" />
       </main>
 
       <footer className={styles.footer}>
@@ -58,12 +112,12 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
+  );
 }
