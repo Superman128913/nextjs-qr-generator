@@ -4,24 +4,25 @@ import styles from "../styles/Home.module.css";
 import axios from "axios";
 import { useState } from "react";
 
+const initialState = {
+  name: "",
+  surname: "",
+  email: "",
+  dob: "",
+  phone: "",
+  timestamp: "",
+};
 export default function Home() {
   const [inputs, setInputs] = useState({
-    name: "",
-    surname: "",
-    email: "",
-    dob: "",
-    phone: "",
-    timestamp: "",
+    ...initialState,
   });
   const [mask, updateMask] = useState(0);
   const [code, updateCode] = useState("");
 
   const handleSubmit = (e) => {
     e?.preventDefault();
-    console.log(mask);
     const payload = { data: { ...inputs, timestamp: +new Date() }, mask };
     axios.post("http://localhost:3000/api/scan", payload).then((response) => {
-      console.log(response);
       updateCode(response.data);
     });
   };
@@ -38,6 +39,16 @@ export default function Home() {
     e?.preventDefault();
     updateMask((mask + 1) % 8);
     handleSubmit();
+  };
+
+  const onReset = (e) => {
+    e?.preventDefault();
+    updateMask(0);
+    updateCode("");
+    setInputs((inputs) => ({
+      ...inputs,
+      ...initialState,
+    }));
   };
 
   return (
@@ -107,7 +118,16 @@ export default function Home() {
           </label>
           <input type="submit" value="Get QR" />
         </form>
-        {code && <button onClick={newPattern} className="form-newpattern">New pattern</button>}
+        {code && (
+          <div>
+            <button onClick={newPattern} className="form-newpattern">
+              New pattern
+            </button>
+            <button onClick={onReset} className="form-newpattern">
+              Reset
+            </button>
+          </div>
+        )}
         <img src={code} alt="" />
       </main>
 
