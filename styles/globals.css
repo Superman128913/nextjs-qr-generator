@@ -14,3 +14,31 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.qr-form{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-input{
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: none;
+  font-size: 1rem;
+  padding-bottom: calc(.5em - 1px);
+  padding-left: calc(.75em - 1px);
+  padding-right: calc(.75em - 1px);
+  padding-top: calc(.5em - 1px);
+}
+
+.form-label{
+  justify-content: space-between;
+  display: flex;
+  margin: 5px;
+  flex-direction: column;
+}
+
+.form-newpattern{
+  margin: 10px;
+  border-radius: 5px;
+}

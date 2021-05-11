@@ -36,7 +36,7 @@ export default function Home() {
 
   const newPattern = (e) => {
     e?.preventDefault();
-    updateMask(((mask + 1) % 8));
+    updateMask((mask + 1) % 8);
     handleSubmit();
   };
 
@@ -50,9 +50,10 @@ export default function Home() {
 
       <main className={styles.main}>
         <form onSubmit={handleSubmit} className="qr-form">
-          <label>
+          <label className="form-label">
             Name:
             <input
+              className="form-input"
               type="text"
               name="name"
               value={inputs.name}
@@ -60,9 +61,10 @@ export default function Home() {
               required
             />
           </label>
-          <label>
+          <label className="form-label">
             Last Name:
             <input
+              className="form-input"
               type="text"
               name="surname"
               value={inputs.surname}
@@ -70,9 +72,10 @@ export default function Home() {
               required
             />
           </label>
-          <label>
+          <label className="form-label">
             Email:
             <input
+              className="form-input"
               name="email"
               type="email"
               value={inputs.email}
@@ -80,9 +83,10 @@ export default function Home() {
               required
             />
           </label>
-          <label>
+          <label className="form-label">
             Phone:
             <input
+              className="form-input"
               name="phone"
               type="tel"
               value={inputs.phone}
@@ -90,9 +94,10 @@ export default function Home() {
               required
             />
           </label>
-          <label>
+          <label className="form-label">
             Date of birth:
             <input
+              className="form-input"
               name="dob"
               type="date"
               value={inputs.dob}
@@ -102,7 +107,7 @@ export default function Home() {
           </label>
           <input type="submit" value="Get QR" />
         </form>
-        <button onClick={newPattern}>New pattern</button>
+        {code && <button onClick={newPattern} className="form-newpattern">New pattern</button>}
         <img src={code} alt="" />
       </main>
 
