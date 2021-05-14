@@ -126,7 +126,7 @@ export default function Home() {
               required
             />
           </label>
-          {!code && <input type="submit" aria-label="submit" value="Get QR" />}
+          <input type="submit" aria-label="submit" value="Get QR" />
         </form>
         {code && (
           <div>
