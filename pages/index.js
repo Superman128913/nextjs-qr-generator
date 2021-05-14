@@ -18,20 +18,24 @@ export default function Home() {
   });
   const [mask, updateMask] = useState(0);
   const [code, updateCode] = useState("");
+  const [err, updateErr] = useState("");
 
   const handleSubmit = (e) => {
     e?.preventDefault();
     const payload = { data: { ...inputs, timestamp: +new Date() }, mask };
     axios.post("http://localhost:3000/api/scan", payload).then((response) => {
       updateCode(response.data);
+    }).catch(err=>{
+      updateErr(err.data);
     });
   };
 
   const handleInputChange = (event) => {
+    const { name, value } = event.target;
     event.persist();
     setInputs((inputs) => ({
       ...inputs,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
   };
 
@@ -45,6 +49,7 @@ export default function Home() {
     e?.preventDefault();
     updateMask(0);
     updateCode("");
+    updateErr("");
     setInputs((inputs) => ({
       ...inputs,
       ...initialState,
@@ -67,6 +72,7 @@ export default function Home() {
               className="form-input"
               type="text"
               name="name"
+              aria-label="name"
               value={inputs.name}
               onChange={handleInputChange}
               required
@@ -78,6 +84,7 @@ export default function Home() {
               className="form-input"
               type="text"
               name="surname"
+              aria-label="surname"
               value={inputs.surname}
               onChange={handleInputChange}
               required
@@ -89,6 +96,7 @@ export default function Home() {
               className="form-input"
               name="email"
               type="email"
+              aria-label="email"
               value={inputs.email}
               onChange={handleInputChange}
               required
@@ -99,6 +107,7 @@ export default function Home() {
             <input
               className="form-input"
               name="phone"
+              aria-label="phone"
               type="tel"
               value={inputs.phone}
               onChange={handleInputChange}
@@ -110,13 +119,14 @@ export default function Home() {
             <input
               className="form-input"
               name="dob"
+              aria-label="dob"
               type="date"
               value={inputs.dob}
               onChange={handleInputChange}
               required
             />
           </label>
-          <input type="submit" value="Get QR" />
+          {!code && <input type="submit" aria-label="submit" value="Get QR" />}
         </form>
         {code && (
           <div>
@@ -128,7 +138,8 @@ export default function Home() {
             </button>
           </div>
         )}
-        <img src={code} alt="" />
+        {err && <p>{err}</p>}
+        <img src={code} alt="" aria-label="code" />
       </main>
 
       <footer className={styles.footer}>
