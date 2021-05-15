@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const qr = require("qrcode");
 
-export default (req, res) => {
+export default function handler(req, res) {
   if(!req.body || !req.body.data){
     return res.status(500).send('No request body or data')
   }
