@@ -19,16 +19,29 @@ export default function Home() {
   const [mask, updateMask] = useState(0);
   const [code, updateCode] = useState("");
   const [err, updateErr] = useState("");
+  const formItems = [
+    { type: "text", name: "name", text: "Name" },
+    { type: "text", name: "surname", text: "Surname" },
+    { type: "text", name: "email", text: "Email" },
+    { type: "tel", name: "phone", text: "Phone Number" },
+    { type: "date", name: "dob", text: "Date of Birth" },
+  ];
 
   const handleSubmit = (e) => {
     e?.preventDefault();
     const payload = { data: { ...inputs, timestamp: +new Date() }, mask };
-    const API = process.env.NODE_ENV === 'development' ? 'http://localhost:3000': 'https://qr-code-genetator-nextjs.vercel.app'
-    axios.post(API + '/api/scan', payload).then((response) => {
-      updateCode(response.data);
-    }).catch(err=>{
-      updateErr(err.data);
-    });
+    const API =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : "https://qr-code-genetator-nextjs.vercel.app";
+    axios
+      .post(API + "/api/scan", payload)
+      .then((response) => {
+        updateCode(response.data);
+      })
+      .catch((err) => {
+        updateErr(err.data);
+      });
   };
 
   const handleInputChange = (event) => {
@@ -67,66 +80,20 @@ export default function Home() {
 
       <main className={styles.main}>
         <form onSubmit={handleSubmit} className="qr-form">
-          <label className="form-label">
-            Name:
-            <input
-              className="form-input"
-              type="text"
-              name="name"
-              aria-label="name"
-              value={inputs.name}
-              onChange={handleInputChange}
-              required
-            />
-          </label>
-          <label className="form-label">
-            Last Name:
-            <input
-              className="form-input"
-              type="text"
-              name="surname"
-              aria-label="surname"
-              value={inputs.surname}
-              onChange={handleInputChange}
-              required
-            />
-          </label>
-          <label className="form-label">
-            Email:
-            <input
-              className="form-input"
-              name="email"
-              type="email"
-              aria-label="email"
-              value={inputs.email}
-              onChange={handleInputChange}
-              required
-            />
-          </label>
-          <label className="form-label">
-            Phone:
-            <input
-              className="form-input"
-              name="phone"
-              aria-label="phone"
-              type="tel"
-              value={inputs.phone}
-              onChange={handleInputChange}
-              required
-            />
-          </label>
-          <label className="form-label">
-            Date of birth:
-            <input
-              className="form-input"
-              name="dob"
-              aria-label="dob"
-              type="date"
-              value={inputs.dob}
-              onChange={handleInputChange}
-              required
-            />
-          </label>
+          {formItems.map((item, index) => (
+            <label className="form-label" key={index}>
+              {item.text}:
+              <input
+                className="form-input"
+                type={item.type}
+                name={item.name}
+                aria-label={item.name}
+                value={inputs[item.name]}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+          ))}
           <input type="submit" aria-label="submit" value="Get QR" />
         </form>
         {code && (
