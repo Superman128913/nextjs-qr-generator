@@ -23,7 +23,8 @@ export default function Home() {
   const handleSubmit = (e) => {
     e?.preventDefault();
     const payload = { data: { ...inputs, timestamp: +new Date() }, mask };
-    axios.post("http://localhost:3000/api/scan", payload).then((response) => {
+    const API = process.env.NODE_ENV === 'development' ? 'http://localhost:3000': 'https://qr-code-genetator-nextjs.vercel.app'
+    axios.post(API + '/api/scan', payload).then((response) => {
       updateCode(response.data);
     }).catch(err=>{
       updateErr(err.data);
